@@ -6,8 +6,35 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = (ev) => {
+  const naviagte = useNavigate()
+
+
+  const handleRegister = async (ev) => {
     ev.preventDefault();
+    try {
+      const res = await fetch("http://localhost:3000/register",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          userName,
+          password
+        })
+      })
+
+      if(res.ok){
+        const data = res.json()
+        console.log(data.success)
+        naviagte("/login")
+      }else{
+        const data = res.json()
+        console.error(data.err);
+      }
+    } catch (error) {
+      console.log("Something went wrong", error)
+    }
   };
   return (
     <div className="flex flex-col justify-center items-center h-screen w-screen">

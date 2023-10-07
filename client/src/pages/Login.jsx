@@ -1,10 +1,38 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleLogin = (ev) => {
+
+  const navigate = useNavigate()
+
+  const handleLogin = async (ev) => {
     ev.preventDefault();
+
+    try {
+      const res = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      })
+
+      if(res.ok){
+        const data = res.json()
+        navigate("/")
+        console.log(data.success)
+      } else{
+        const data = res.json()
+        console.error(data.err)
+      }
+      
+    } catch (error) {
+      console.error("Something went wrong!",error)
+    }
   };
   return (
     <div className="flex flex-col justify-center items-center h-screen w-screen">
@@ -33,7 +61,7 @@ const Login = () => {
         </form>
 
         <label>
-          Don't have account?{" "}
+          Don't have account?
           <strong>
             <Link to={"/register"}>Click Here</Link>
           </strong>
