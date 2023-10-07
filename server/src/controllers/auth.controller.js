@@ -37,8 +37,28 @@ const registerController = async (req, res)=>{
     
 }
 
-const loginController = (req, res)=>{
+const loginController = async (req, res)=>{
     console.log(req.body)
+    const {email, password}=req.body
+
+    try {
+        const userExist = await User.findOne({email})
+        if(!userExist){
+            return res.status(400).json({err: "user doen't exist"});
+        }
+        const passwordMatch = bcrypt.compare(userExist.password, password)
+        if(!passwordMatch){
+            return res.status(400).json({err: "wrong password"})
+        }
+
+        const jwtToken = jwt.sign({email: email}, secret, {expiresIn: "5h"});
+        res.status(200).json({success: "User valid", token: jwtToken})
+
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({err: "something went wrong"})
+    }
 }
 
 
