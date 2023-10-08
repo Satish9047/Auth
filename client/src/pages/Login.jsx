@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    const knownUser = localStorage.getItem("jwtToken");
+    if(knownUser){
+      return navigate("/")
+    }
+  },[])
 
   const handleLogin = async (ev) => {
     ev.preventDefault();
@@ -23,8 +30,9 @@ const Login = () => {
 
       if(res.ok){
         const data = res.json()
-        navigate("/")
         console.log(data.success)
+        localStorage.setItem("jwtoken", data.Token)
+        navigate("/")
       } else{
         const data = res.json()
         console.error(data.err)
