@@ -16,10 +16,10 @@ const Dashboard = () => {
         })
 
         if(!res.ok){
-            const data = res.json()
-            console.log(data.err)
-            localStorage.removeItem("jwtToken")
-            navigate("/login");
+          const data = res.json()
+          console.log(data.err)
+          localStorage.removeItem("jwtToken")
+          navigate("/login");
         }
       }
     }
