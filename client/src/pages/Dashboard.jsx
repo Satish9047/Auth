@@ -1,8 +1,12 @@
 import {useEffect} from "react"
 import { useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { setIsLogin } from "../slices/authSlice";
 
 const Dashboard = () => {
   const navigate = useNavigate()
+  // const isLogin = useSelector((state) => state.auth.isLogin);
+  const dispatch = useDispatch();
 
   useEffect(()=>{
     const token = localStorage.getItem("jwtToken")
@@ -19,6 +23,7 @@ const Dashboard = () => {
           const data = res.json()
           console.log(data.err)
           localStorage.removeItem("jwtToken")
+          dispatch(setIsLogin(false));
           navigate("/login");
         }
       }
