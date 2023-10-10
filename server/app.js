@@ -6,6 +6,7 @@ const morgan = require("morgan")
 require("dotenv").config()
 
 const {registerController, loginController} = require("./src/controllers/auth.controller")
+const {verifyJWT} = require("./src/middleware")
 
 const app = express();
 const port = process.env.PORT
@@ -27,12 +28,11 @@ app.use(helmet())
 app.use(morgan("dev"))
 app.use(express.json())
 
-app.get("/", (req, res)=>{
-    console.log(req.headers);
-})
 
+app.get("/profile", verifyJWT)
 app.post("/login", loginController)
 app.post("/register", registerController)
+
 
 
 app.listen(port, ()=>{
