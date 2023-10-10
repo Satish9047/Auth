@@ -46,12 +46,13 @@ const loginController = async (req, res)=>{
         if(!userExist){
             return res.status(400).json({err: "user doen't exist"});
         }
-        const passwordMatch = bcrypt.compare(userExist.password, password)
+        const passwordMatch = await bcrypt.compare(password, userExist.password)
         if(!passwordMatch){
             return res.status(400).json({err: "wrong password"})
         }
 
         const jwtToken = jwt.sign({email: email}, secret, {expiresIn: "5h"});
+        console.log(jwtToken)
         res.status(200).json({success: "User valid", token: jwtToken})
 
         

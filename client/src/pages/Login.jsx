@@ -1,21 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {useDispatch } from "react-redux"
-import { setIsLogin } from "../slices/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate()
-  const dispatch = useDispatch();
 
-  useEffect(()=>{
     const knownUser = localStorage.getItem("jwtToken");
     if(knownUser){
       return navigate("/")
     }
-  },[])
+  
 
   const handleLogin = async (ev) => {
     ev.preventDefault();
@@ -33,14 +29,12 @@ const Login = () => {
       })
 
       if(res.ok){
-        const data = res.json()
-        console.log(data.success)
-        dispatch(setIsLogin(true));
-        localStorage.setItem("jwtToken", data.Token)
-
+        const data = await res.json()
+        console.log(data.success, data.token)
+        localStorage.setItem("jwtToken", data.token)
         navigate("/")
       } else{
-        const data = res.json()
+        const data = await res.json()
         console.error(data.err)
       }
       
@@ -75,7 +69,7 @@ const Login = () => {
         </form>
 
         <label>
-          Don't have account?
+          Don&apos;t have account?
           <strong>
             <Link to={"/register"}>Click Here</Link>
           </strong>

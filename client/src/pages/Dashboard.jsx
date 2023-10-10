@@ -1,35 +1,36 @@
 import {useEffect} from "react"
 import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { setIsLogin } from "../slices/authSlice";
+
 
 const Dashboard = () => {
   const navigate = useNavigate()
-  // const isLogin = useSelector((state) => state.auth.isLogin);
-  const dispatch = useDispatch();
 
   useEffect(()=>{
     const token = localStorage.getItem("jwtToken")
+    if(!token){
+      return navigate("/login")
+    }
+
     const validateJWT = async ()=>{
       if(token){
         const res = await fetch("http://localhost:3000/profile", {
-          method: "get",
+          method: "GET",
           headers: {
-            "authorization": `Bearer ${token}`
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           }
         })
 
         if(!res.ok){
-          const data = res.json()
+          const data = await res.json()
           console.log(data.err)
           localStorage.removeItem("jwtToken")
-          dispatch(setIsLogin(false));
           navigate("/login");
         }
       }
     }
     validateJWT()
-  },[])
+  }, [])
 
   return (
     <div>Dashboard</div>
