@@ -1,9 +1,11 @@
 import { useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {useStore} from "../states"
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const toggleLogin = useStore((state) => state.toggleLogin);
 
   const navigate = useNavigate()
 
@@ -32,6 +34,7 @@ const Login = () => {
         const data = await res.json()
         console.log(data.success, data.token)
         localStorage.setItem("jwtToken", data.token)
+        toggleLogin()
         navigate("/")
       } else{
         const data = await res.json()
